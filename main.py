@@ -29,12 +29,13 @@ def value_365(dataset):
     return dataset
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~2.3~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Return the predicted value [scalar]
+# Return the predicted value [scalar] as according to the coefficients
 def predicted_value(y, a, sigma):
     return np.dot(y, a) + sigma
 
 
-# Function constructed as required on exercise 2.5
+#### Function constructed as required on exercise 2.5
+#### It leverages autoregressive modeling to make future predictions in a time series, and it returns a DataFrame containing these predictions
 def predict_time_series(time_series, deep, n_pred, n_train):
     # Autoregression Formula and the Yule Walker coefficients rho and sigma
     rho, sigma = sm.regression.yule_walker(time_series[:n_train], order=deep, method="mle")
@@ -54,11 +55,9 @@ def predict_time_series(time_series, deep, n_pred, n_train):
     return prediction
 
 
-
 if __name__ == "__main__":
-    
+
     print('Program Start... \n')
-    
 # Read the dataframe from the .csv files and separate them in three datasets
 # Total Energy Consumption, Wind+Solar Consumption, Temperature change in a timeline
 # They represent daily electrical consumption of an area for a timeline of 11 years (2006-2017) and the temperature change over a timeline of 9 years (1981 - 1990)
@@ -80,7 +79,7 @@ if __name__ == "__main__":
     ws2 = create_feature(wind_solar, time_units)
     temps2 = create_feature(temperature, time_units)
 
-# Create a 1x3 grid of subplots
+# Create a 1x3 grid of SMA subplots
     fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Adjust figsize as needed
     plot_dataset(consumption2, axs[0])
     plot_dataset(ws2, axs[1])
@@ -91,11 +90,12 @@ if __name__ == "__main__":
     plt.show()
 
 # Add the three columns correlated with value_365 to our datasets
+# To perform the yearly deviation from the original value (in terms of SMA)
     consumption2 = value_365(consumption2)
     ws2 = value_365(ws2)
     temps2 = value_365(temps2)
     
-# Create a 1x3 grid of subplots
+# Create a 1x3 grid of yearly deviation subplots
     fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Adjust figsize as needed
     plot_365(consumption2, axs[0])
     plot_365(ws2, axs[1])
@@ -110,10 +110,12 @@ if __name__ == "__main__":
     
 # ~~~~~~~~~~~~~~~Predicted Values~~~~~~~~~~~~~~~~~~~~~~~~
 # Get a and sigma values from library built in function of regression
-    a, sigma = sm.regression.yule_walker(temperature2['Temp'][:-365], order=4, method="mle")
+# The AR model has an order of 4, meaning it will consider the previous 4 time steps to predict the next one.
+# The method used for parameter estimation is Maximum Likelihood Estimation (MLE), a common approach to estimate AR model parameters.
+    a, sigma = sm.regression.yule_walker(temperature2['Temp'][:-365], order = 4, method = "mle")
 
 
-# Create a 3x1 grid of subplots
+# Create a 3x1 grid of autoregression subplots
     fig, axs = plt.subplots(1, 3, figsize=(18, 5))  # Adjust figsize as needed
     fig.suptitle('Autoregressive Model (AR) Temperature Prediction')
     for i, k in enumerate(time_units):
