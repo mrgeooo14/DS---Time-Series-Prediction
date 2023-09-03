@@ -31,7 +31,7 @@ The AR model's parameters, including $a$ (AR coefficients) and $\sigma$ (noise v
 ## Installation:
 1. Clone the repository:
 
-    git clone [https://github.com/mrgeooo14/travelling_salesman_problem.git](https://github.com/mrgeooo14/DS-Time-Series-Prediction.git)
+    git clone [https://github.com/mrgeooo14/DS-Time-Series-Prediction.git](https://github.com/mrgeooo14/DS-Time-Series-Prediction.git)
 
 2. Navigate to the project directory.
 
